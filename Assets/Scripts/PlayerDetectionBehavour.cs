@@ -1,41 +1,61 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerDetectionBehavour : MonoBehaviour
 {
     [SerializeField]
+    float detectionRadius;
+    [SerializeField]
+    float chaseRadius;
+    Transform targetPoint;
+    [SerializeField]
     private LayerMask whatIsObstacle;
-
     [SerializeField]
     private Transform checkPoint;
+    Transform target;
 
-    [SerializeField]
-    float detectionRadius;
+    [SerializeField] float rotationSpeed;
 
-    public Transform targetPoint;
-
+    NavMeshAgent navMesh;
 
 
-    private void Awake()
+    private void Start()
     {
-        
+        navMesh = GetComponent<NavMeshAgent>();
+        targetPoint = GameObject.FindObjectOfType<PlayerMovement>().transform;
     }
 
     private void Update()
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(checkPoint.position, (targetPoint.position - checkPoint.position).normalized, out hit, detectionRadius, whatIsObstacle) && (targetPoint.position - checkPoint.position).normalized.magnitude > 0)
+
+        Vector3 directionToTarget = (targetPoint.position - checkPoint.position).normalized;
+
+        // Raycast pour vérifier s'il y a des obstacles
+        if (Physics.Raycast(checkPoint.position, directionToTarget, out hit, detectionRadius, whatIsObstacle))
         {
-            Debug.Log(hit.transform.name);
-            if(hit.transform.tag == "Player")
+            // Vérifier si la cible est devant l'objet
+            if (Vector3.Dot(transform.forward, directionToTarget) > 0)
             {
-                Debug.Log("PLAYER DETECTED : ");
+                if (hit.transform.CompareTag("Player"))
+                {
+                    target = hit.transform;
+                }
             }
         }
-    }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawRay(checkPoint.position, (targetPoint.position - checkPoint.position).normalized * detectionRadius);
+        if(Vector3.Distance(targetPoint.position, checkPoint.position) <= chaseRadius)
+        {
+            Vector3 directionToTargetPoint = (targetPoint.position - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(directionToTargetPoint);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            navMesh.SetDestination(target.position);
+        }
+        else
+        {
+            target = null;
+            navMesh.SetDestination(transform.position);
+        }
     }
 }
