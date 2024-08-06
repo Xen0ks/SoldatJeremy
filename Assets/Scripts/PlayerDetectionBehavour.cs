@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class PlayerDetectionBehavour : MonoBehaviour
 {
-    [SerializeField]
+    /*[SerializeField]
     float detectionRadius;
     [SerializeField]
     float chaseRadius;
@@ -22,7 +22,7 @@ public class PlayerDetectionBehavour : MonoBehaviour
     private void Start()
     {
         navMesh = GetComponent<NavMeshAgent>();
-        targetPoint = GameObject.FindObjectOfType<PlayerMovement>().transform;
+        target = GameObject.FindObjectOfType<PlayerMovement>().transform;
     }
 
     private void Update()
@@ -30,7 +30,7 @@ public class PlayerDetectionBehavour : MonoBehaviour
         RaycastHit hit;
 
 
-        Vector3 directionToTarget = (targetPoint.position - checkPoint.position).normalized;
+        Vector3 directionToTarget = (targetPoint.position - target.position).normalized;
 
         // Raycast pour vérifier s'il y a des obstacles
         if (Physics.Raycast(checkPoint.position, directionToTarget, out hit, detectionRadius, whatIsObstacle))
@@ -57,5 +57,5 @@ public class PlayerDetectionBehavour : MonoBehaviour
             target = null;
             navMesh.SetDestination(transform.position);
         }
-    }
+    }*/
 }

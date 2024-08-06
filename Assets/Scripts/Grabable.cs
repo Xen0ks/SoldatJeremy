@@ -13,13 +13,16 @@ public class Grabable : MonoBehaviour
         if (grabbed) return;
         this.grabPoint = grabPoint;
         grabbed = true;
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().freezeRotation = true;
     }
 
     public void UnGrab()
     {
         if (!grabbed) return;
         grabbed = false;
-
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().freezeRotation = false;
     }
 
     private void Update()
