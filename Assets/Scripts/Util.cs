@@ -26,7 +26,6 @@ public class Util : MonoBehaviour
     public void OpenMenu()
     {
         menuCount++;
-        Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -42,7 +41,6 @@ public class Util : MonoBehaviour
         if(menuCount <= 0)
         {
             menuCount = 0;
-            Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 

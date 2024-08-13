@@ -13,6 +13,7 @@ public class GrabBehaviour : MonoBehaviour
     [SerializeField] float moveSpeed = 5f; // Vitesse à laquelle le joueur se déplace vers l'objet
     [SerializeField] float stopDistance = 0.1f; // Distance à laquelle le mouvement s'arrête en douceur
     [SerializeField] GameObject arm;
+    [SerializeField] Transform grabPoint;
     Animator armAnim;
 
     private Rigidbody rb;
@@ -59,15 +60,9 @@ public class GrabBehaviour : MonoBehaviour
         {
             if (grabbing)
             {
-                // Ramener le bras à sa position originale
-                MoveBone(0);
+                // Ramener le bras à la position de grab
+                MoveBone(3);
 
-                // Vérifier si le bras est proche de sa position originale ou si l'objet est assez proche du joueur pour le lancer
-                if (Vector3.Distance(boneToMove.position, boneOriginalPos.position) < 0.1f ||
-                    Vector3.Distance(transform.position, hit.transform.position) < throwDistance)
-                {
-                    UnGrab();
-                }
             }
             else
             {
@@ -76,10 +71,11 @@ public class GrabBehaviour : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse1))
+        if (!Input.GetKey(KeyCode.Mouse1))
         {
             justThrowed = false;
             dashing = false;
+            UnGrab();
         }
         if (dashing)
         {
@@ -102,8 +98,6 @@ public class GrabBehaviour : MonoBehaviour
 
         // Attacher l'objet au bras
         grabable?.Grab(boneToMove);
-
-        yield return null;
     }
 
     void MoveBone(int state)
@@ -122,6 +116,11 @@ public class GrabBehaviour : MonoBehaviour
         {
             Util.instance.SetLayerRecursively(arm, 0);
             boneToMove.position = Vector3.SmoothDamp(boneToMove.position, dashTarget, ref velocity, smoothTime);
+        }
+        if(state == 3)
+        {
+            Util.instance.SetLayerRecursively(arm, 0);
+            boneToMove.position = Vector3.SmoothDamp(boneToMove.position, grabPoint.position, ref velocity, smoothTime);
         }
     }
 

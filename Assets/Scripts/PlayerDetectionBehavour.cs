@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class PlayerDetectionBehavour : MonoBehaviour
 {
-    /*[SerializeField]
+    [SerializeField]
     float detectionRadius;
     [SerializeField]
     float chaseRadius;
@@ -45,7 +45,7 @@ public class PlayerDetectionBehavour : MonoBehaviour
             }
         }
 
-        if(Vector3.Distance(targetPoint.position, checkPoint.position) <= chaseRadius)
+        if(Vector3.Distance(targetPoint.position, checkPoint.position) <= chaseRadius && Vector3.Distance(target.position, checkPoint.position) > 4f)
         {
             Vector3 directionToTargetPoint = (targetPoint.position - transform.position).normalized;
             Quaternion lookRotation = Quaternion.LookRotation(directionToTargetPoint);
@@ -57,5 +57,5 @@ public class PlayerDetectionBehavour : MonoBehaviour
             target = null;
             navMesh.SetDestination(transform.position);
         }
-    }*/
+    }
 }

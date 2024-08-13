@@ -5,7 +5,6 @@ public class MapSystem : MonoBehaviour
 {
     // References
 
-    [SerializeField] GameObject mapUI;
     [SerializeField] Transform mapDisplay;
 
     [SerializeField] MarkerData[] existingMarkers;
@@ -17,10 +16,7 @@ public class MapSystem : MonoBehaviour
     [SerializeField] GameObject markerPrefab;
     [SerializeField] Transform markersParent;
 
-
-
     // Fonctionnement
-    bool isOpen;
     Marker selectedMarker;
 
 
@@ -38,18 +34,20 @@ public class MapSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            ToggleMap();
-        }
-
-        if (isOpen)
+        if (Menus.instance.isOpen && Menus.instance.target == 1)
         {
             // Gestion du zoom de la minimap
             float newSize = mapDisplay.localScale.x + (Input.mouseScrollDelta.y * 0.5f);
+
+            float newMarkerSize = 0;
             if (newSize <= 10 && newSize > 1)
             {
                 mapDisplay.localScale = new Vector2(newSize, newSize);
+                for (int i = 0; i < markersParent.childCount; i++)
+                {
+                    markersParent.GetChild(i).localScale = Vector3.one * (10 / mapDisplay.localScale.x);
+                }
+
             }
 
             if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -63,6 +61,7 @@ public class MapSystem : MonoBehaviour
     {
         Marker marker = Instantiate(markerPrefab, markersParent).GetComponent<Marker>();
         marker.transform.position = pos;
+        marker.transform.localScale = Vector3.one * (10 / mapDisplay.localScale.x);
         marker.SetMarker(existingMarkers[0]);
         SelectMarker(marker);
     }
@@ -89,25 +88,6 @@ public class MapSystem : MonoBehaviour
         Destroy(selectedMarker.gameObject);
         selectedMarker = null;
         markersPanelAnim.SetBool("Show", false);
-    }
-
-
-
-
-
-    public void ToggleMap()
-    {
-        mapUI.SetActive(!mapUI.activeSelf);
-        isOpen = mapUI.activeSelf;
-
-        if(isOpen)
-        {
-            Util.instance.OpenMenu();
-        }
-        else
-        {
-            Util.instance.CloseMenu();
-        }
     }
 
     void InitializeMarkerButtons()

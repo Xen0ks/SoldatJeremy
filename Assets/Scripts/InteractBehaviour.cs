@@ -35,6 +35,11 @@ public class InteractBehaviour : MonoBehaviour
                 {
                     ItemInteract();
                 }
+
+                if (hit.transform.TryGetComponent<NPC>(out NPC npc))
+                {
+                    NPCInteract(npc);
+                }
             }
         }
 
@@ -46,7 +51,10 @@ public class InteractBehaviour : MonoBehaviour
             armAnim.SetBool("Show", false);
             CameraShake.instance.ShakeCamera();
         }
+
+
     }
+
 
     void ItemInteract()
     {
@@ -54,5 +62,11 @@ public class InteractBehaviour : MonoBehaviour
         item.transform.parent = objectPoint;
         item.transform.localPosition = item.item.posOnArm;
         item.transform.localRotation = item.item.rotOnArm;
+    }
+
+    void NPCInteract(NPC npc)
+    {
+        DialogueSystem.instance.StartDialogue(npc.dialogues, npc.npcName, npc.firstTalkEvent);
+        npc.firstTalkEvent = null;
     }
 }

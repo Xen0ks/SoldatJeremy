@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestSystem : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class QuestSystem : MonoBehaviour
 
     public List<Quest> unlockedQuests = new List<Quest>();
 
+    [SerializeField] Text questNameText;
+    [SerializeField] Text questDescriptionText;
     
 
     public static QuestSystem instance;
@@ -19,8 +22,18 @@ public class QuestSystem : MonoBehaviour
     }
 
 
+    public void UnlockQuest(Quest quest)
+    {
+        unlockedQuests.Add(quest);
+        UpdateQuestDisplay();
+    }
+
     public void UpdateQuestDisplay()
     {
+        for (int i = 0; i < questButtonsParent.childCount; i++)
+        {
+            Destroy(questButtonsParent.GetChild(i).gameObject);
+        }
         foreach (Quest quest in unlockedQuests)
         {
             QuestButton instantiatedButton = Instantiate(questButtonPrefab, questButtonsParent);
@@ -30,6 +43,7 @@ public class QuestSystem : MonoBehaviour
 
     public void DisplayQuest(Quest quest)
     {
-
+        questNameText.text = quest.name;
+        questDescriptionText.text = quest.descriptions[quest.state-1];
     }
 }

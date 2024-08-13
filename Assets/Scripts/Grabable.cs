@@ -7,6 +7,7 @@ public class Grabable : MonoBehaviour
 
     Transform grabPoint;
 
+    Vector3 velocity;
 
     public void Grab(Transform grabPoint)
     {
@@ -23,13 +24,17 @@ public class Grabable : MonoBehaviour
         grabbed = false;
         GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().freezeRotation = false;
+        if(TryGetComponent<Explosive>(out Explosive e))
+        {
+            StartCoroutine(e.Explode());
+        }
     }
 
     private void Update()
     {
         if(grabbed)
         {
-            transform.position = grabPoint.position;
+            transform.position = Vector3.SmoothDamp(transform.position, grabPoint.position, ref velocity, 0.05f);
         }
     }
 }
