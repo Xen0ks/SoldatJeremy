@@ -14,16 +14,24 @@ public class Grabable : MonoBehaviour
         if (grabbed) return;
         this.grabPoint = grabPoint;
         grabbed = true;
-        GetComponent<Rigidbody>().useGravity = false;
-        GetComponent<Rigidbody>().freezeRotation = true;
+        if (TryGetComponent<Rigidbody>(out Rigidbody rb))
+        {
+            rb.useGravity = false;
+            rb.freezeRotation = true;
+        }
+
     }
 
     public void UnGrab()
     {
         if (!grabbed) return;
         grabbed = false;
-        GetComponent<Rigidbody>().useGravity = true;
-        GetComponent<Rigidbody>().freezeRotation = false;
+        if(TryGetComponent<Rigidbody>(out Rigidbody rb))
+        {
+            rb.useGravity = true;
+            rb.freezeRotation = false;
+        }
+
         if(TryGetComponent<Explosive>(out Explosive e))
         {
             StartCoroutine(e.Explode());

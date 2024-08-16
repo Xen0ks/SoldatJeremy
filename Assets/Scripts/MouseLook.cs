@@ -14,32 +14,26 @@ public class MouseLook : MonoBehaviour
     [SerializeField]
     Transform player;
 
-    float xRotation = 0f;
+    float xRotation;
+    float yRotation;
 
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
+        transform.position = headPoint.position;
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
+        yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         player.Rotate(Vector3.up * mouseX);
-    }
-
-    private void OnEnable()
-    {
-        transform.parent = headPoint;
-    }
-
-    private void OnDisable()
-    {
-        transform.SetParent(headPoint, false);
     }
 }

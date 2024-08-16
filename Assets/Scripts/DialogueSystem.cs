@@ -33,10 +33,10 @@ public class DialogueSystem : MonoBehaviour
         instance = this;
     }
 
-    public void StartDialogue(List<DialogContent> dialogueSentences, string npcName, UnityEvent firstTalkEvent)
+    public void StartDialogue(List<DialogContent> dialogueSentences, string npcName, UnityEvent firstTalkEvent = null)
     {
         npcNameText.text = npcName;
-        firstTalkEvent.Invoke();
+        if(firstTalkEvent != null) firstTalkEvent.Invoke();
         sentences.Clear();
         foreach (var dialogueContent in dialogueSentences)
         {

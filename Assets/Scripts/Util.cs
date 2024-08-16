@@ -5,8 +5,11 @@ public class Util : MonoBehaviour
     public static Util instance;
     private int menuCount = 0;
 
+    
+
     // References
-    [SerializeField] Transform player; 
+    [SerializeField] Transform player;
+    [SerializeField] MouseLook mouseLook;
 
     private void Awake()
     {
@@ -29,9 +32,11 @@ public class Util : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        player.GetComponent<PlayerMovement>().enabled = false;
+        player.GetComponent<PlayerController>().enabled = false;
         player.GetComponent<InteractBehaviour>().enabled = false;
         player.GetComponent<GrabBehaviour>().enabled = false;
+        player.GetComponent<StickBehaviour>().enabled = false;
+        mouseLook.enabled = false;
 
     }
 
@@ -44,9 +49,13 @@ public class Util : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            player.GetComponent<PlayerMovement>().enabled = true;
+            player.GetComponent<PlayerController>().enabled = true;
             player.GetComponent<InteractBehaviour>().enabled = true;
             player.GetComponent<GrabBehaviour>().enabled = true;
+            player.GetComponent<StickBehaviour>().enabled = true;
+
+            mouseLook.enabled = true;
+
         }
     }
 }

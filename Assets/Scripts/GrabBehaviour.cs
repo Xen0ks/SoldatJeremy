@@ -19,11 +19,12 @@ public class GrabBehaviour : MonoBehaviour
     private Rigidbody rb;
     private Grabable grabable;
     [HideInInspector] public bool grabbing;
-    private bool justThrowed;
+    public bool justThrowed;
     [HideInInspector] public bool dashing;
     private Vector3 velocity;
     private float smoothTime = 0.1f; // Temps de lissage
     private Vector3 dashTarget;
+    private Transform dashingTargetObject;
     private RaycastHit hit;
 
     private void Awake()
@@ -51,6 +52,7 @@ public class GrabBehaviour : MonoBehaviour
                 else
                 {
                     dashTarget = hit.point;
+                    dashingTargetObject = hit.transform;
                     Invoke("StartDash", 0.11f);
                 }
 
@@ -124,7 +126,7 @@ public class GrabBehaviour : MonoBehaviour
         }
     }
 
-    void UnGrab()
+    public void UnGrab()
     {
         if (!grabbing) return;
 
@@ -169,6 +171,11 @@ public class GrabBehaviour : MonoBehaviour
         // Si la distance restante est inférieure à la distance d'arrêt, ralentir le mouvement
         if (distanceToTarget < 2)
         {
+            if(dashingTargetObject.TryGetComponent<Enemy>(out Enemy e))
+            {
+                Vector3 forceDirection = (e.transform.position - transform.position).normalized;
+                StartCoroutine(e.Stun(forceDirection));
+            }
             rb.velocity = Vector3.zero;
             dashing = false; // Arrêter le dash une fois la cible atteinte
 
